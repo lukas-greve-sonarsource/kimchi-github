@@ -1,0 +1,43 @@
+# This is an example Starter pipeline configuration
+# Use a skeleton to build, test and deploy using manual and parallel steps
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+
+image: atlassian/default-image:3
+
+definitions:
+  steps:
+    - step: &build-step
+        name: SonarQube analysis
+        script:
+          - pipe: sonarsource/sonarqube-scan:1.0.0
+            variables:
+              SONAR_HOST_URL: ${SONAR_HOST_URL} # Get the value from the repository/workspace variable.
+              SONAR_TOKEN: ${SONAR_TOKEN} # Get the value from the repository/workspace variable. You shouldn't set secret in clear text here.
+  caches:
+    sonar: ~/.sonar
+
+clone:
+  depth: full
+
+pipelines:
+  branches:
+    '{master}':
+      - step: *build-step
+          
+pull-requests:
+  '**':
+      - step: *build-step
+
+    # The following deployment steps will be executed for each pipeline run. To configure your steps and conditionally deploy see https://support.atlassian.com/bitbucket-cloud/docs/configure-bitbucket-pipelinesyml/
+      - step:
+          name: 'Deployment to Staging'
+          deployment: staging
+          script:
+            - echo "Your deployment to staging script goes here..."
+      - step:
+        name: 'Deployment to Production'
+        deployment: production
+        trigger: 'manual'
+        script:
+          - echo "Your deployment to production script goes here..."
