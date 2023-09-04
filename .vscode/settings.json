@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "https-lg-sonarqube-ngrok-io-",
+        "projectKey": "lukas-greve-sonarsource_kimchi-github_AYWBHAzXzvGUgJKPEYCT"
+    }
+}
